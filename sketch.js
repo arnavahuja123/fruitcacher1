@@ -1,41 +1,49 @@
-var bullet ,speed,weight;
-var wall,thickness;
+var database;
+var back_img;
+var gameState =0;
+var playerCount = 0;
+var allPlayers;
+
+var player, form,game;
+var player1,player2;
+var players;
+var fruits;
+var fruitGroup;
+var fruit1_img, fruit2_img, fruit3_img, fruit4_img, fruit5_img;
+var player_img;
+
+
+function preload(){
+  back_img = loadImage("images/jungle.jpg");
+  player_img = loadImage("images/basket2.png");
+  fruit1_img = loadImage("images/apple2.png");
+  fruit2_img = loadImage("images/banana2.png");
+  fruit3_img = loadImage("images/melon2.png");
+  fruit4_img = loadImage("images/orange2.png");
+  fruit5_img = loadImage("images/pineapple2.png");
+  fruitGroup = new Group();
+}
 function setup() {
-  createCanvas(1600,400);
-  speed=random(223,321);
-  weight=random(30,52);
-  thinkness=random(22,83);
-
-  bullet = createSprite(40, 200, 50, 5);
-  bullet.velocityX=speed;
-  bullet.shapeColor = color(255);
-
-  wall = createSprite(1200, 200, thickness, height/2);
-  wall.shapeColor= color(80,80,80);
+  createCanvas(1000, 600);
+  database = firebase.database();
+  game = new Game();
+  game.getState();
+  game.start();
+  
 }
 
 function draw() {
-  background(0);  
-
-  if(collided(bullet,wall)){
-    bullet.velocityX = 0;
-    var damage = 0.5*weight*speed*speed/(thickness*thickness*thickness);
-    if(damage>10)
-    {
-      bullet.shapeColor = color(255,0,0);
-    }
+  background(back_img);
+  
+   if (playerCount === 2) {
+     game.update(1);
+   }
+   if (gameState === 1) {
+     clear(); 
+     game.play();
+   }
+   if (gameState === 2) {
     
-    if(damage<10){
-     bullet.shapeColor=color(0,255,0);
-        }
-  }
-  drawSprites();
-}
-function collided(lbullet,lwall){
-  bulletRightEdge=lbullet.x+lbullet.width;
-  wallLeftEdge=lwall.x;
-  if(bulletRightEdge >= wallLeftEdge){
-    return  true;
-  }
-  return false;
+     game.end();
+   }
 }
